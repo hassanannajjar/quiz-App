@@ -1,6 +1,6 @@
 import React from "react";
-import { StyleSheet, Text, View, Dimensions, Button } from "react-native";
-
+import { StyleSheet, Text, View, Dimensions } from "react-native";
+import Button from "./components/Button";
 const { width, height } = Dimensions.get("window");
 const Home = ({ navigation }) => {
   return (
@@ -31,5 +31,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     width: "100%",
     height: height * 0.5,
+    marginTop: height * 0.2,
   },
 });
