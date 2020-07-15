@@ -1,14 +1,14 @@
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 
-const level_1 = () => {
+const HighScores = () => {
   return (
     <View>
-      <Text></Text>
+      <Text>HighScores</Text>
     </View>
   );
 };
 
-export default level_1;
+export default HighScores;
 
 const styles = StyleSheet.create({});
