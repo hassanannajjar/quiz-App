@@ -14,21 +14,26 @@ const Quiz = ({ navigation }) => {
     setActiveQuestionIndex(nextIndex);
   };
 
+  const Answer = (correct) => {
+    if (correct) {
+      NextQuestion();
+    } else {
+      alert("you lose");
+    }
+  };
   return (
     <View style={styles.container}>
       <Text style={styles.text}>{questions[activeQuestionIndex].question}</Text>
       <StatusBar barStyle="light-content" />
       <SafeAreaView style={styles.safearea}>
         <View style={styles.buttonContainer}>
-          {questions[activeQuestionIndex].answers.map((answer) => {
-            return (
-              <Button
-                key={answer.id}
-                title={answer.text}
-                onPress={NextQuestion}
-              />
-            );
-          })}
+          {questions[activeQuestionIndex].answers.map(
+            ({ id, text, correct }) => {
+              return (
+                <Button key={id} title={text} onPress={() => Answer(correct)} />
+              );
+            }
+          )}
         </View>
       </SafeAreaView>
     </View>
