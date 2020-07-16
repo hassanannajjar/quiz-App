@@ -5,7 +5,6 @@ const { width, height } = Dimensions.get("window");
 const Home = ({ navigation }) => {
   return (
     <View style={styles.container}>
-      <Text>Home</Text>
       <Button
         title="Start"
         onPress={() => {

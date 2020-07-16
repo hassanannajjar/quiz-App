@@ -15,24 +15,41 @@ const Quiz = ({ navigation }) => {
   const [activeQuestionIndex, setActiveQuestionIndex] = useState(0);
   const [score, setScore] = useState(0);
   const [life, setLife] = useState(3);
+  const [errorAnswer, setErrorAnswer] = useState();
+  const [correctAnswer, setCorrectAnswer] = useState();
+  const [disable, setDisable] = useState(false);
   const totalQuestions = questions.length;
   const NextQuestion = () => {
     const nextIndex = activeQuestionIndex + 1;
     if (nextIndex >= totalQuestions) {
-      return navigation.popToTop();
+      return navigation.navigate("Home");
     }
     setActiveQuestionIndex(nextIndex);
   };
-
   const Answer = (correct) => {
+    setDisable(true);
     if (correct) {
       setScore(score + 1);
       NextQuestion();
     } else if (life > 1) {
       setLife(life - 1);
+      setCorrectAnswer(styles.correctAnswer);
+      setErrorAnswer(styles.errorAnswer);
+      setTimeout(() => {
+        NextQuestion();
+        setCorrectAnswer();
+        setErrorAnswer();
+      }, 1);
     } else {
-      return navigation.popToTop();
+      setCorrectAnswer(styles.correctAnswer);
+      setErrorAnswer(styles.errorAnswer);
+      setTimeout(() => {
+        navigation.navigate("Home");
+        setCorrectAnswer();
+        setErrorAnswer();
+      }, 1);
     }
+    setTimeout(() => setDisable(false), 3);
   };
   return (
     <View style={styles.container}>
@@ -70,7 +87,16 @@ const Quiz = ({ navigation }) => {
           {questions[activeQuestionIndex].answers.map(
             ({ id, text, correct }) => {
               return (
-                <Button key={id} title={text} onPress={() => Answer(correct)} />
+                <Button
+                  style={correct ? correctAnswer : errorAnswer}
+                  key={id}
+                  title={text}
+                  onPress={
+                    disable
+                      ? () => {}
+                      : (element) => Answer(correct, id, element)
+                  }
+                />
               );
             }
           )}
@@ -128,5 +154,23 @@ const styles = StyleSheet.create({
   timer: {
     fontSize: 30,
     color: "white",
+  },
+  errorAnswer: {
+    backgroundColor: "red",
+    borderRadius: 10,
+    paddingVertical: 15,
+    alignItems: "center",
+    justifyContent: "center",
+    width: "46%",
+    marginTop: 20,
+  },
+  correctAnswer: {
+    backgroundColor: "green",
+    borderRadius: 10,
+    paddingVertical: 15,
+    alignItems: "center",
+    justifyContent: "center",
+    width: "46%",
+    marginTop: 20,
   },
 });
