@@ -5,6 +5,7 @@ import questions from "../data/questions";
 const Quiz = ({ navigation }) => {
   const totalCount = questions.length;
   const [activeQuestionIndex, setActiveQuestionIndex] = useState(0);
+  const [score, setScore] = useState(0);
 
   const NextQuestion = () => {
     const nextIndex = activeQuestionIndex + 1;
@@ -16,6 +17,7 @@ const Quiz = ({ navigation }) => {
 
   const Answer = (correct) => {
     if (correct) {
+      setScore(score + 1);
       NextQuestion();
     } else {
       alert("you lose");
@@ -23,6 +25,7 @@ const Quiz = ({ navigation }) => {
   };
   return (
     <View style={styles.container}>
+      <Text style={styles.score}>{score}</Text>
       <Text style={styles.text}>{questions[activeQuestionIndex].question}</Text>
       <StatusBar barStyle="light-content" />
       <SafeAreaView style={styles.safearea}>
