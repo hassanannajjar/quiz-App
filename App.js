@@ -3,9 +3,10 @@ import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
-import Home from "./Home";
-import HighScores from "./HighScores";
-import About from "./About";
+import Home from "./screens/Home";
+import HighScores from "./screens/HighScores";
+import About from "./screens/About";
+import Quiz from "./screens/Quiz";
 
 const Stack = createStackNavigator();
 
@@ -16,6 +17,11 @@ export default function App() {
         <Stack.Screen
           name="Home"
           component={Home}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Quiz"
+          component={Quiz}
           options={{ headerShown: false }}
         />
         <Stack.Screen name="HighScores" component={HighScores} />

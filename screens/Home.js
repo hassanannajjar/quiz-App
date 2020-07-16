@@ -1,12 +1,17 @@
 import React from "react";
 import { StyleSheet, Text, View, Dimensions } from "react-native";
-import Button from "./components/Button";
+import Button from "../components/Button";
 const { width, height } = Dimensions.get("window");
 const Home = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <Text>Home</Text>
-      <Button title="Start" />
+      <Button
+        title="Start"
+        onPress={() => {
+          navigation.navigate("Quiz");
+        }}
+      />
       <Button
         title="High Scores"
         onPress={() => {
