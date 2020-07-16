@@ -1,15 +1,24 @@
 import React, { useState } from "react";
-import { StyleSheet, Text, View, StatusBar, SafeAreaView } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  StatusBar,
+  SafeAreaView,
+  Image,
+  Dimensions,
+} from "react-native";
 import Button from "../components/Button";
 import questions from "../data/questions";
+const { width, height } = Dimensions.get("window");
 const Quiz = ({ navigation }) => {
-  const totalCount = questions.length;
   const [activeQuestionIndex, setActiveQuestionIndex] = useState(0);
   const [score, setScore] = useState(0);
-
+  const [life, setLife] = useState(3);
+  const totalQuestions = questions.length;
   const NextQuestion = () => {
     const nextIndex = activeQuestionIndex + 1;
-    if (nextIndex >= totalCount) {
+    if (nextIndex >= totalQuestions) {
       return navigation.popToTop();
     }
     setActiveQuestionIndex(nextIndex);
@@ -19,13 +28,41 @@ const Quiz = ({ navigation }) => {
     if (correct) {
       setScore(score + 1);
       NextQuestion();
+    } else if (life > 1) {
+      setLife(life - 1);
     } else {
-      alert("you lose");
+      return navigation.popToTop();
     }
   };
   return (
     <View style={styles.container}>
-      <Text style={styles.score}>{score}</Text>
+      <View style={styles.topPar}>
+        <Text style={styles.score}>{score}</Text>
+        <Text style={styles.timer}>20</Text>
+        <View style={styles.life}>
+          <Image
+            source={
+              life >= 3
+                ? require("../assets/life.png")
+                : require("../assets/dead.png")
+            }
+          />
+          <Image
+            source={
+              life >= 2
+                ? require("../assets/life.png")
+                : require("../assets/dead.png")
+            }
+          />
+          <Image
+            source={
+              life >= 1
+                ? require("../assets/life.png")
+                : require("../assets/dead.png")
+            }
+          />
+        </View>
+      </View>
       <Text style={styles.text}>{questions[activeQuestionIndex].question}</Text>
       <StatusBar barStyle="light-content" />
       <SafeAreaView style={styles.safearea}>
@@ -55,7 +92,7 @@ const styles = StyleSheet.create({
     fontSize: 25,
     textAlign: "center",
     fontWeight: "600",
-    marginTop: "20%",
+    marginTop: "15%",
   },
   safearea: {
     flex: 1,
@@ -67,10 +104,29 @@ const styles = StyleSheet.create({
     alignItems: "center",
     alignContent: "center",
   },
-  score: {
+  topPar: {
     position: "absolute",
-    top: 5,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingLeft: 10,
+    paddingRight: 10,
+    width: width,
+    height: height * 0.06,
+    backgroundColor: "#52aa",
+  },
+  score: {
     fontSize: 30,
-    left: 30,
+    color: "white",
+    flex: 1,
+  },
+  life: {
+    flexDirection: "row",
+    justifyContent: "flex-end",
+    flex: 1,
+  },
+  timer: {
+    fontSize: 30,
+    color: "white",
   },
 });
