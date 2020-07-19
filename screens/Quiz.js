@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   StyleSheet,
   Text,
@@ -7,31 +7,48 @@ import {
   SafeAreaView,
   Image,
   Dimensions,
+  AsyncStorage,
+  Alert,
 } from "react-native";
 import Button from "../components/Button";
-import questions from "../data/questions";
+import questions from "./allQuestion";
 const { width, height } = Dimensions.get("window");
 const Quiz = ({ navigation }) => {
+  const [interval, setIntervall] = useState();
   const [activeQuestionIndex, setActiveQuestionIndex] = useState(0);
   const [score, setScore] = useState(0);
   const [life, setLife] = useState(3);
   const [errorAnswer, setErrorAnswer] = useState();
   const [correctAnswer, setCorrectAnswer] = useState();
   const [disable, setDisable] = useState(false);
-  const totalQuestions = questions.length;
-  const NextQuestion = () => {
-    const nextIndex = activeQuestionIndex + 1;
-    if (nextIndex >= totalQuestions) {
-      return navigation.navigate("Home");
+  const [timer, setTimer] = useState(20);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setTimer((number) => number - 1);
+    }, 1000);
+    setIntervall(interval);
+    return () => clearInterval(interval);
+  }, [activeQuestionIndex]);
+
+  useEffect(() => {
+    if (timer < 1) {
+      clearInterval(interval);
+      Answer();
     }
-    setActiveQuestionIndex(nextIndex);
+  }, [timer]);
+
+  const NextQuestion = () => {
+    setTimer(20);
+    setActiveQuestionIndex(Math.floor(Math.random() * questions.length));
   };
-  const Answer = (correct) => {
+
+  const Answer = async (correct) => {
     setDisable(true);
     if (correct) {
       setScore(score + 1);
       NextQuestion();
-    } else if (life > 1) {
+    } else if (life > 0) {
       setLife(life - 1);
       setCorrectAnswer(styles.correctAnswer);
       setErrorAnswer(styles.errorAnswer);
@@ -39,23 +56,40 @@ const Quiz = ({ navigation }) => {
         NextQuestion();
         setCorrectAnswer();
         setErrorAnswer();
-      }, 1);
+      }, 20);
     } else {
+      clearInterval(interval);
+      await AsyncStorage.setItem("SCORE", `${score}`);
       setCorrectAnswer(styles.correctAnswer);
       setErrorAnswer(styles.errorAnswer);
-      setTimeout(() => {
-        navigation.navigate("Home");
+      setTimeout(async () => {
+        Alert.alert("", "you Lose are you want repeat?", [
+          {
+            text: "yes",
+            onPress: () => {
+              setLife(3);
+              NextQuestion();
+            },
+          },
+          {
+            text: "No",
+            onPress: () => {
+              navigation.navigate("Home");
+            },
+          },
+        ]);
         setCorrectAnswer();
         setErrorAnswer();
-      }, 1);
+      }, 20);
     }
-    setTimeout(() => setDisable(false), 3);
+    setDisable(false);
   };
+
   return (
     <View style={styles.container}>
       <View style={styles.topPar}>
         <Text style={styles.score}>{score}</Text>
-        <Text style={styles.timer}>20</Text>
+        <Text style={styles.timer}>{timer}</Text>
         <View style={styles.life}>
           <Image
             source={
