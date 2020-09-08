@@ -5,7 +5,6 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import Home from "./screens/Home";
 import HighScores from "./screens/HighScores";
-import About from "./screens/About";
 import Quiz from "./screens/Quiz";
 
 const Stack = createStackNavigator();
@@ -25,7 +24,6 @@ export default function App() {
           options={{ headerShown: false }}
         />
         <Stack.Screen name="HighScores" component={HighScores} />
-        <Stack.Screen name="About" component={About} />
       </Stack.Navigator>
     </NavigationContainer>
   );
