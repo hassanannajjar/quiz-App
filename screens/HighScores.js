@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, Text, View, AsyncStorage } from "react-native";
+import { StyleSheet, Text, View, AsyncStorage, FlatList } from "react-native";
 
 const HighScores = () => {
-  const [scores, setScores] = useState("No Scores");
+  const [scores, setScores] = useState([]);
 
   const getData = async () => {
     const AllScores = await AsyncStorage.getItem("SCORE");
@@ -10,11 +10,12 @@ const HighScores = () => {
   };
 
   useEffect(() => {
-    getData().then((Scores) => setScores(Scores));
+    getData().then((Scores) => setScores(Scores.split(",")));
   }, []);
   return (
-    <View>
-      <Text style={styles.text}> {scores}</Text>
+    <View style={styles.container}>
+    <FlatList style={styles.flatList} showsVerticalScrollIndicator={false} data={scores} renderItem={({item}) => <Text style={styles.text}>{item}</Text>} keyExtractor={(item, index) => 'key'+index}
+/>
     </View>
   );
 };
@@ -22,9 +23,20 @@ const HighScores = () => {
 export default HighScores;
 
 const styles = StyleSheet.create({
+  container: {
+    width: "100%",
+    height: "100%",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    backgroundColor: "#d06A50",
+  },
+  flatList:{
+    width: "100%"
+  },
   text: {
-    fontSize: 30,
-    textAlign: "center",
-    marginTop: 20,
+    margin: 10,
+    textAlign: 'center',
+    fontSize: 50,
   },
 });

@@ -23,7 +23,15 @@ export default function App() {
           component={Quiz}
           options={{ headerShown: false }}
         />
-        <Stack.Screen name="HighScores" component={HighScores} />
+        <Stack.Screen name="HighScores" component={HighScores} 
+        options={{headerStyle: {
+          backgroundColor: '#EB6A56',
+        },
+        headerTintColor: '#fff',
+        headerTitleStyle: {
+          fontWeight: 'bold',
+        },}}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );

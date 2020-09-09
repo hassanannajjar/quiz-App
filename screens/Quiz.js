@@ -13,10 +13,18 @@ import {
 import Button from "../components/Button";
 import questions from "./allQuestion";
 const { width, height } = Dimensions.get("window");
+
+const getData = async () => {
+  const AllScores = await AsyncStorage.getItem("SCORE");
+  return AllScores;
+};
+
+
 const Quiz = ({ navigation }) => {
   const [interval, setIntervall] = useState();
   const [activeQuestionIndex, setActiveQuestionIndex] = useState(0);
   const [score, setScore] = useState(0);
+  const [scores, setScores] = useState([]);
   const [life, setLife] = useState(3);
   const [errorAnswer, setErrorAnswer] = useState();
   const [correctAnswer, setCorrectAnswer] = useState();
@@ -37,6 +45,11 @@ const Quiz = ({ navigation }) => {
       Answer();
     }
   }, [timer]);
+
+
+  useEffect(() => {
+    getData().then((Scores) => setScores(Scores.split(",")));
+  },[])
 
   const NextQuestion = () => {
     setTimer(20);
@@ -59,7 +72,10 @@ const Quiz = ({ navigation }) => {
       }, 20);
     } else {
       clearInterval(interval);
-      await AsyncStorage.setItem("SCORE", `${score}`);
+      scores.push(score);
+      scores.sort((a, b) => b - a);
+      const uniqueScores =  [...new Set(scores)];
+      await AsyncStorage.setItem("SCORE", `${uniqueScores.length > 10?uniqueScores.slice(0, 10):uniqueScores}`);
       setCorrectAnswer(styles.correctAnswer);
       setErrorAnswer(styles.errorAnswer);
       setTimeout(async () => {
